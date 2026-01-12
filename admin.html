@@ -1,0 +1,913 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIFA World Cup 2026 - Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .admin-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .admin-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-header p {
+            opacity: 0.9;
+        }
+
+        .admin-content {
+            padding: 2rem;
+        }
+
+        .login-box {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .dashboard-box {
+            display: none;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f5f7fa;
+            border-radius: 8px;
+            padding: 5px;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: none;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s;
+            min-width: 150px;
+        }
+
+        .tab-btn.active {
+            background: #0d47a1;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-primary {
+            background: #0d47a1;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1565c0;
+        }
+
+        .btn-success {
+            background: #388e3c;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #2e7d32;
+        }
+
+        .btn-danger {
+            background: #d32f2f;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c62828;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        .matches-list {
+            margin-top: 2rem;
+            border-top: 2px solid #eee;
+            padding-top: 1.5rem;
+        }
+
+        .match-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .match-info {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .match-info h4 {
+            margin-bottom: 5px;
+            color: #0d47a1;
+        }
+
+        .match-info p {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 3px 0;
+        }
+
+        .match-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .score-inputs {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .score-input {
+            width: 60px;
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .status-select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            color: #0d47a1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            color: #666;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .match-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .match-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            
+            .tab-btn {
+                min-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>FIFA World Cup 2026 Admin</h1>
+            <p>Manage matches, scores, and tickets</p>
+        </div>
+
+        <div class="admin-content">
+            <!-- Login Box -->
+            <div id="loginBox" class="login-box">
+                <h2 style="margin-bottom: 2rem; color: #0d47a1; text-align: center;">Admin Login</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="adminUsername">Username</label>
+                        <input type="text" id="adminUsername" class="form-control" placeholder="Enter username" required value="admin">
+                    </div>
+                    <div class="form-group">
+                        <label for="adminPassword">Password</label>
+                        <input type="password" id="adminPassword" class="form-control" placeholder="Enter password" required value="admin123">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                    </div>
+                    <p style="text-align: center; color: #666; margin-top: 1rem; font-size: 0.9rem;">
+                        Default credentials: <strong>admin</strong> / <strong>admin123</strong>
+                    </p>
+                </form>
+            </div>
+
+            <!-- Dashboard Box -->
+            <div id="dashboardBox" class="dashboard-box">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="matches">Manage Matches</button>
+                    <button class="tab-btn" data-tab="scores">Update Scores</button>
+                    <button class="tab-btn" data-tab="tickets">Ticket Settings</button>
+                </div>
+
+                <!-- Alerts -->
+                <div id="alertSuccess" class="alert alert-success"></div>
+                <div id="alertError" class="alert alert-danger"></div>
+
+                <!-- Matches Management Tab -->
+                <div id="matchesTab" class="tab-content active">
+                    <h3>Add New Match</h3>
+                    <form id="addMatchForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Team 1 Name</label>
+                                <input type="text" id="team1Name" class="form-control" placeholder="e.g., Brazil" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Team 1 Flag Code</label>
+                                <input type="text" id="team1Flag" class="form-control" placeholder="e.g., br" required>
+                                <small style="color: #666;">Use 2-letter country codes like: us, gb, fr, de, br</small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Team 2 Name</label>
+                                <input type="text" id="team2Name" class="form-control" placeholder="e.g., Argentina" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Team 2 Flag Code</label>
+                                <input type="text" id="team2Flag" class="form-control" placeholder="e.g., ar" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Match Date/Stage</label>
+                                <input type="text" id="matchDate" class="form-control" placeholder="e.g., 11 Jun 2026 • Opener" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select id="matchStatus" class="form-control">
+                                    <option value="upcoming">Upcoming</option>
+                                    <option value="live">Live</option>
+                                    <option value="completed">Completed</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-plus"></i> Add Match
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="matches-list">
+                        <h3>Current Matches (Total: <span id="matchCount">0</span>)</h3>
+                        <div id="matchesList">
+                            <!-- Matches will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scores Update Tab -->
+                <div id="scoresTab" class="tab-content">
+                    <h3>Update Match Scores</h3>
+                    <p style="color: #666; margin-bottom: 1.5rem;">Update scores and status for existing matches</p>
+                    <div id="scoresList">
+                        <!-- Matches with scores will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Ticket Prices Tab -->
+                <div id="ticketsTab" class="tab-content">
+                    <h3>Ticket Price Settings</h3>
+                    <div class="stats">
+                        <div class="stat-card">
+                            <h3 id="totalMatches">0</h3>
+                            <p>Total Matches</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="liveMatches">0</h3>
+                            <p>Live Matches</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="completedMatches">0</h3>
+                            <p>Completed</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Discount Percentage</label>
+                        <input type="number" id="discountPercent" class="form-control" value="3" min="0" max="100">
+                        <p style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;">
+                            Current discount applied to all ticket prices (3% = prices are 97% of original)
+                        </p>
+                    </div>
+
+                    <h4 style="margin-top: 2rem;">Base Prices (Before Discount)</h4>
+                    <form id="pricesForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Category 1 (Premium)</label>
+                                <input type="number" id="priceCat1" class="form-control" value="1825" min="0">
+                                <p style="font-size: 0.9rem; color: #666; margin-top: 0.3rem;">
+                                    After discount: $<span id="discountedPrice1">1770</span>
+                                </p>
+                            </div>
+                            <div class="form-group">
+                                <label>Category 2 (Standard)</label>
+                                <input type="number" id="priceCat2" class="form-control" value="1290" min="0">
+                                <p style="font-size: 0.9rem; color: #666; margin-top: 0.3rem;">
+                                    After discount: $<span id="discountedPrice2">1251</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Category 3 (Economy)</label>
+                                <input type="number" id="priceCat3" class="form-control" value="745" min="0">
+                                <p style="font-size: 0.9rem; color: #666; margin-top: 0.3rem;">
+                                    After discount: $<span id="discountedPrice3">723</span>
+                                </p>
+                            </div>
+                            <div class="form-group">
+                                <label>Category 4 (Budget)</label>
+                                <input type="number" id="priceCat4" class="form-control" value="370" min="0">
+                                <p style="font-size: 0.9rem; color: #666; margin-top: 0.3rem;">
+                                    After discount: $<span id="discountedPrice4">359</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save Price Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div style="margin-top: 3rem; padding-top: 1.5rem; border-top: 2px solid #eee; text-align: center;">
+                    <button id="logoutBtn" class="btn btn-danger">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                    <button id="refreshBtn" class="btn" style="background: #666; color: white; margin-left: 10px;">
+                        <i class="fas fa-sync-alt"></i> Refresh Data
+                    </button>
+                    <a href="index.html" class="btn" style="background: #0d47a1; color: white; margin-left: 10px; text-decoration: none;">
+                        <i class="fas fa-eye"></i> View Public Site
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Admin credentials
+        const ADMIN_USER = 'admin';
+        const ADMIN_PASS = 'admin123';
+
+        // DOM Elements
+        const loginBox = document.getElementById('loginBox');
+        const dashboardBox = document.getElementById('dashboardBox');
+        const loginForm = document.getElementById('loginForm');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const alertSuccess = document.getElementById('alertSuccess');
+        const alertError = document.getElementById('alertError');
+
+        // Check if user is already logged in
+        checkLoginStatus();
+
+        // Login functionality
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            if (username === ADMIN_USER && password === ADMIN_PASS) {
+                localStorage.setItem('adminLoggedIn', 'true');
+                showDashboard();
+                showAlert('Login successful!', 'success');
+            } else {
+                showAlert('Invalid credentials! Use: admin / admin123', 'error');
+            }
+        });
+
+        // Logout functionality
+        logoutBtn.addEventListener('click', function() {
+            localStorage.removeItem('adminLoggedIn');
+            showLogin();
+            showAlert('Logged out successfully!', 'success');
+        });
+
+        // Refresh button
+        refreshBtn.addEventListener('click', function() {
+            loadMatches();
+            updateTicketPrices();
+            showAlert('Data refreshed!', 'success');
+        });
+
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all tabs
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Hide all tab contents
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                // Show clicked tab content
+                document.getElementById(this.dataset.tab + 'Tab').classList.add('active');
+                
+                // Load specific content for tab
+                if (this.dataset.tab === 'scores') {
+                    loadScores();
+                } else if (this.dataset.tab === 'tickets') {
+                    loadTicketStats();
+                }
+            });
+        });
+
+        // Check login status
+        function checkLoginStatus() {
+            if (localStorage.getItem('adminLoggedIn') === 'true') {
+                showDashboard();
+            } else {
+                showLogin();
+            }
+        }
+
+        // Show login screen
+        function showLogin() {
+            loginBox.style.display = 'block';
+            dashboardBox.style.display = 'none';
+        }
+
+        // Show dashboard
+        function showDashboard() {
+            loginBox.style.display = 'none';
+            dashboardBox.style.display = 'block';
+            loadMatches();
+            loadTicketStats();
+            updateStats();
+        }
+
+        // Load and display matches
+        function loadMatches() {
+            // Load matches from localStorage
+            let matches = JSON.parse(localStorage.getItem('fifaMatches')) || [
+                { id:1, name:"Mexico vs South Africa", date:"11 Jun 2026 • Opener", flag1:"mx", flag2:"za", score1:0, score2:0, status:"upcoming" },
+                { id:2, name:"USA vs Paraguay", date:"Group Stage", flag1:"us", flag2:"py", score1:0, score2:0, status:"upcoming" },
+                { id:3, name:"Brazil vs Morocco", date:"Group Stage", flag1:"br", flag2:"ma", score1:0, score2:0, status:"upcoming" }
+            ];
+            
+            const matchesList = document.getElementById('matchesList');
+            matchesList.innerHTML = '';
+            
+            if (matches.length === 0) {
+                matchesList.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #666;">
+                        <i class="fas fa-futbol" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                        <p>No matches found. Add your first match above!</p>
+                    </div>
+                `;
+                document.getElementById('matchCount').textContent = '0';
+                return;
+            }
+            
+            document.getElementById('matchCount').textContent = matches.length;
+            
+            matches.forEach(match => {
+                const matchItem = document.createElement('div');
+                matchItem.className = 'match-item';
+                matchItem.innerHTML = `
+                    <div class="match-info">
+                        <h4>${match.name}</h4>
+                        <p><strong>Date:</strong> ${match.date}</p>
+                        <p><strong>Status:</strong> <span style="color: ${
+                            match.status === 'upcoming' ? '#1565c0' : 
+                            match.status === 'live' ? '#d32f2f' : '#2e7d32'
+                        };">${match.status.charAt(0).toUpperCase() + match.status.slice(1)}</span></p>
+                        ${match.status === 'completed' ? `<p><strong>Score:</strong> ${match.score1} - ${match.score2}</p>` : ''}
+                        <p><strong>Flag Codes:</strong> ${match.flag1} vs ${match.flag2}</p>
+                    </div>
+                    <div class="match-actions">
+                        <button class="btn btn-danger btn-sm delete-match" data-id="${match.id}">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                `;
+                matchesList.appendChild(matchItem);
+            });
+            
+            // Add delete event listeners
+            document.querySelectorAll('.delete-match').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const matchId = parseInt(this.dataset.id);
+                    deleteMatch(matchId);
+                });
+            });
+            
+            updateStats();
+        }
+
+        // Load scores for editing
+        function loadScores() {
+            let matches = JSON.parse(localStorage.getItem('fifaMatches')) || [];
+            
+            const scoresList = document.getElementById('scoresList');
+            scoresList.innerHTML = '';
+            
+            if (matches.length === 0) {
+                scoresList.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #666;">
+                        <i class="fas fa-futbol" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                        <p>No matches to update scores for.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            matches.forEach(match => {
+                const scoreItem = document.createElement('div');
+                scoreItem.className = 'match-item';
+                scoreItem.innerHTML = `
+                    <div class="match-info">
+                        <h4>${match.name}</h4>
+                        <p>${match.date}</p>
+                        <div class="score-inputs">
+                            <input type="number" class="score-input team1-score" data-id="${match.id}" value="${match.score1}" min="0">
+                            <span style="font-weight: bold; color: #ffca28;">VS</span>
+                            <input type="number" class="score-input team2-score" data-id="${match.id}" value="${match.score2}" min="0">
+                        </div>
+                        <select class="status-select" data-id="${match.id}" style="margin-top: 10px;">
+                            <option value="upcoming" ${match.status === 'upcoming' ? 'selected' : ''}>Upcoming</option>
+                            <option value="live" ${match.status === 'live' ? 'selected' : ''}>Live</option>
+                            <option value="completed" ${match.status === 'completed' ? 'selected' : ''}>Completed</option>
+                        </select>
+                    </div>
+                    <div class="match-actions">
+                        <button class="btn btn-success btn-sm save-score" data-id="${match.id}">
+                            <i class="fas fa-save"></i> Save
+                        </button>
+                    </div>
+                `;
+                scoresList.appendChild(scoreItem);
+            });
+            
+            // Add save event listeners
+            document.querySelectorAll('.save-score').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const matchId = parseInt(this.dataset.id);
+                    updateMatchScore(matchId);
+                });
+            });
+        }
+
+        // Load ticket price statistics
+        function loadTicketStats() {
+            // Load ticket prices from localStorage
+            let ticketPrices = JSON.parse(localStorage.getItem('fifaTicketPrices')) || {
+                1: 1825,
+                2: 1290,
+                3: 745,
+                4: 370
+            };
+            
+            // Load discount from localStorage
+            let discountPercent = parseInt(localStorage.getItem('fifaDiscount')) || 3;
+            
+            // Update discount percentage input
+            document.getElementById('discountPercent').value = discountPercent;
+            
+            // Update price inputs
+            document.getElementById('priceCat1').value = ticketPrices[1];
+            document.getElementById('priceCat2').value = ticketPrices[2];
+            document.getElementById('priceCat3').value = ticketPrices[3];
+            document.getElementById('priceCat4').value = ticketPrices[4];
+            
+            // Update discounted prices display
+            updateDiscountedPrices();
+            
+            // Update discount percentage input event
+            document.getElementById('discountPercent').addEventListener('input', updateDiscountedPrices);
+            
+            // Update price inputs events
+            document.getElementById('priceCat1').addEventListener('input', updateDiscountedPrices);
+            document.getElementById('priceCat2').addEventListener('input', updateDiscountedPrices);
+            document.getElementById('priceCat3').addEventListener('input', updateDiscountedPrices);
+            document.getElementById('priceCat4').addEventListener('input', updateDiscountedPrices);
+        }
+
+        // Update discounted prices display
+        function updateDiscountedPrices() {
+            const discountPercent = parseInt(document.getElementById('discountPercent').value) || 0;
+            const discountMultiplier = (100 - discountPercent) / 100;
+            
+            const price1 = parseInt(document.getElementById('priceCat1').value) || 0;
+            const price2 = parseInt(document.getElementById('priceCat2').value) || 0;
+            const price3 = parseInt(document.getElementById('priceCat3').value) || 0;
+            const price4 = parseInt(document.getElementById('priceCat4').value) || 0;
+            
+            document.getElementById('discountedPrice1').textContent = Math.round(price1 * discountMultiplier);
+            document.getElementById('discountedPrice2').textContent = Math.round(price2 * discountMultiplier);
+            document.getElementById('discountedPrice3').textContent = Math.round(price3 * discountMultiplier);
+            document.getElementById('discountedPrice4').textContent = Math.round(price4 * discountMultiplier);
+        }
+
+        // Update ticket prices
+        function updateTicketPrices() {
+            // This function updates the prices in localStorage
+            updateDiscountedPrices();
+        }
+
+        // Add match form submission
+        document.getElementById('addMatchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const team1 = document.getElementById('team1Name').value.trim();
+            const flag1 = document.getElementById('team1Flag').value.trim().toLowerCase();
+            const team2 = document.getElementById('team2Name').value.trim();
+            const flag2 = document.getElementById('team2Flag').value.trim().toLowerCase();
+            const date = document.getElementById('matchDate').value.trim();
+            const status = document.getElementById('matchStatus').value;
+            
+            if (!team1 || !team2 || !flag1 || !flag2 || !date) {
+                showAlert('Please fill in all fields!', 'error');
+                return;
+            }
+            
+            if (flag1.length !== 2 || flag2.length !== 2) {
+                showAlert('Flag codes should be 2 letters (e.g., br, us, gb)', 'error');
+                return;
+            }
+            
+            // Load existing matches
+            let matches = JSON.parse(localStorage.getItem('fifaMatches')) || [];
+            
+            const newMatch = {
+                id: matches.length > 0 ? Math.max(...matches.map(m => m.id)) + 1 : 1,
+                name: `${team1} vs ${team2}`,
+                date: date,
+                flag1: flag1,
+                flag2: flag2,
+                score1: 0,
+                score2: 0,
+                status: status
+            };
+            
+            matches.push(newMatch);
+            localStorage.setItem('fifaMatches', JSON.stringify(matches));
+            
+            showAlert('Match added successfully!', 'success');
+            loadMatches();
+            this.reset();
+        });
+
+        // Update match score
+        function updateMatchScore(matchId) {
+            // Load matches from localStorage
+            let matches = JSON.parse(localStorage.getItem('fifaMatches')) || [];
+            
+            const matchIndex = matches.findIndex(m => m.id === matchId);
+            if (matchIndex === -1) {
+                showAlert('Match not found!', 'error');
+                return;
+            }
+            
+            const score1Input = document.querySelector(`.team1-score[data-id="${matchId}"]`);
+            const score2Input = document.querySelector(`.team2-score[data-id="${matchId}"]`);
+            const statusSelect = document.querySelector(`.status-select[data-id="${matchId}"]`);
+            
+            const score1 = parseInt(score1Input.value) || 0;
+            const score2 = parseInt(score2Input.value) || 0;
+            const status = statusSelect.value;
+            
+            matches[matchIndex].score1 = score1;
+            matches[matchIndex].score2 = score2;
+            matches[matchIndex].status = status;
+            
+            localStorage.setItem('fifaMatches', JSON.stringify(matches));
+            
+            showAlert('Match score updated successfully!', 'success');
+            updateStats();
+        }
+
+        // Delete match
+        function deleteMatch(matchId) {
+            if (!confirm('Are you sure you want to delete this match?')) return;
+            
+            // Load matches from localStorage
+            let matches = JSON.parse(localStorage.getItem('fifaMatches')) || [];
+            
+            const matchIndex = matches.findIndex(m => m.id === matchId);
+            if (matchIndex === -1) {
+                showAlert('Match not found!', 'error');
+                return;
+            }
+            
+            matches.splice(matchIndex, 1);
+            localStorage.setItem('fifaMatches', JSON.stringify(matches));
+            
+            showAlert('Match deleted successfully!', 'success');
+            loadMatches();
+            updateStats();
+        }
+
+        // Update statistics
+        function updateStats() {
+            // Load matches from localStorage
+            let matches = JSON.parse(localStorage.getItem('fifaMatches')) || [];
+            
+            const totalMatches = matches.length;
+            const liveMatches = matches.filter(m => m.status === 'live').length;
+            const completedMatches = matches.filter(m => m.status === 'completed').length;
+            
+            document.getElementById('totalMatches').textContent = totalMatches;
+            document.getElementById('liveMatches').textContent = liveMatches;
+            document.getElementById('completedMatches').textContent = completedMatches;
+        }
+
+        // Prices form submission
+        document.getElementById('pricesForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get values from form
+            const price1 = parseInt(document.getElementById('priceCat1').value) || 1825;
+            const price2 = parseInt(document.getElementById('priceCat2').value) || 1290;
+            const price3 = parseInt(document.getElementById('priceCat3').value) || 745;
+            const price4 = parseInt(document.getElementById('priceCat4').value) || 370;
+            const discountPercent = parseInt(document.getElementById('discountPercent').value) || 3;
+            
+            // Save to localStorage
+            const ticketPrices = {
+                1: price1,
+                2: price2,
+                3: price3,
+                4: price4
+            };
+            
+            localStorage.setItem('fifaTicketPrices', JSON.stringify(ticketPrices));
+            localStorage.setItem('fifaDiscount', discountPercent.toString());
+            
+            showAlert('Ticket prices updated successfully! Changes will appear on the public site.', 'success');
+        });
+
+        // Show alert message
+        function showAlert(message, type) {
+            if (type === 'success') {
+                alertSuccess.textContent = message;
+                alertSuccess.style.display = 'block';
+                alertError.style.display = 'none';
+                
+                setTimeout(() => {
+                    alertSuccess.style.display = 'none';
+                }, 3000);
+            } else {
+                alertError.textContent = message;
+                alertError.style.display = 'block';
+                alertSuccess.style.display = 'none';
+                
+                setTimeout(() => {
+                    alertError.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // Initialize
+        updateDiscountedPrices();
+    </script>
+</body>
+</html>
